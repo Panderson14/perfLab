@@ -10,13 +10,13 @@
  * Please fill in the following team struct 
  */
 team_t team = {
-    "bovik",              /* Team name */
+    "Gratrick Oxerson",              /* Team name */
 
-    "Harry Q. Bovik",     /* First member full name */
-    "bovik@nowhere.edu",  /* First member email address */
+    "Patrick Anderson",     /* First member full name */
+    "psa5dg@virginia.edu",  /* First member email address */
 
-    "",                   /* Second member full name (leave blank if none) */
-    ""                    /* Second member email addr (leave blank if none) */
+    "Grant Oxer",                   /* Second member full name (leave blank if none) */
+    "gwo8gy@virginia.edu"                    /* Second member email addr (leave blank if none) */
 };
 
 /***************
@@ -49,6 +49,24 @@ void rotate(int dim, pixel *src, pixel *dst)
     naive_rotate(dim, src, dst);
 }
 
+/*
+ * rotate_quad_loop - Rotate with four loops instead of two
+ * includes code motion for inner for-loops
+ */
+char rotate_quad_loop_descr[] = "Rotate with four loops instead of two";
+void rotate_quad_loop(int dim, pixel *src, pixel *dst) {
+    int BLOCK_SIZE = 32;
+    int bi, bj, i, j, x, y;
+
+    for (bi = 0; bi < dim; bi+=BLOCK_SIZE)
+        for (bj = 0; bj < dim; bj+=BLOCK_SIZE)
+            x = bi + BLOCK_SIZE;
+            for (i = bi; i < x; i++)
+                y = bj + BLOCK_SIZE;
+                for (j = bj; j < y; j++)
+                    dst[RIDX(y-1-j, i, BLOCK_SIZE)] = src[RIDX(x, j, BLOCK_SIZE)];
+}
+
 /*********************************************************************
  * register_rotate_functions - Register all of your different versions
  *     of the rotate kernel with the driver by calling the
@@ -60,7 +78,8 @@ void rotate(int dim, pixel *src, pixel *dst)
 void register_rotate_functions() 
 {
     add_rotate_function(&naive_rotate, naive_rotate_descr);   
-    add_rotate_function(&rotate, rotate_descr);   
+    add_rotate_function(&rotate, rotate_descr);
+    add_rotate_function(&rotate_quad_loop, rotate_quad_loop_descr);
     /* ... Register additional test functions here */
 }
 
