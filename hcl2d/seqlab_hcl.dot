@@ -1,0 +1,55 @@
+digraph seqlab { // auto-generated HCL2 visualization via graphviz
+    node [ fontname="sans-serif" ];
+    rankdir=BT;
+    ///////////////////////// builtin components ////////////////////////
+
+    _regfile [shape="record" label="{<reg_outputA>reg_outputA|<reg_srcA>reg_srcA}|{<reg_outputB>reg_outputB|<reg_srcB>reg_srcB}|{|{<reg_dstE>reg_dstE|<reg_inputE>reg_inputE}}|{|{<reg_dstM>reg_dstM|<reg_inputM>reg_inputM}}" style="filled" fillcolor="#aaffff"];
+    _datamem [shape="record" label="{<mem_output>mem_output|{<mem_readbit>mem_readbit|<mem_addr>mem_addr}}|{|{<mem_writebit>mem_writebit|<mem_input>mem_input}}" style="filled" fillcolor="#aaffff"];
+    _instmem [shape="record" label="{<i10bytes>i10bytes|<pc>pc}" style="filled" fillcolor="#aaffff"];
+    _status [shape="record" label="{|<Stat>Stat}" style="filled" fillcolor="#aaffff"];
+
+    //////////////////////////// user code //////////////////////////////
+
+_reg_P [shape="record" label="{|{<bubble_P>bubble_P|<stall_P>stall_P}}|{<P_pc>P_pc|<p_pc>p_pc}"];
+    _reg_P:P_pc -> _instmem:pc;
+    _instmem:i10bytes -> opcode;
+    opcode -> icode;
+    opcode -> ifun;
+    _op_rA [shape="none" label="24-27"];
+    _op_rA -> rA;
+    _instmem:i10bytes -> _op_rA;
+    icode -> _op_rA [style=dotted];
+    rA -> _regfile:reg_srcA;
+    rB -> _regfile:reg_srcB;
+    _op_rB [shape="none" label="32-36"];
+    _op_rB -> rB;
+    _instmem:i10bytes -> _op_rB;
+    icode -> _op_rB [style=dotted];
+    _op_reg_dstE [shape="none" label="38-43"];
+    _op_reg_dstE -> _regfile:reg_dstE;
+    rB -> _op_reg_dstE;
+    icode -> _op_reg_dstE [style=dotted];
+    _op_valC [shape="none" label="49-56"];
+    _op_valC -> valC;
+    _instmem:i10bytes -> _op_valC;
+    _regfile:reg_outputA -> _op_valC;
+    _regfile:reg_outputB -> _op_valC;
+    icode -> _op_valC [style=dotted];
+    ifun -> _op_valC [style=dotted];
+    _op_reg_inputE [shape="none" label="58-62"];
+    _op_reg_inputE -> _regfile:reg_inputE;
+    valC -> _op_reg_inputE;
+    icode -> _op_reg_inputE [style=dotted];
+_reg_C [shape="record" label="{|{<bubble_C>bubble_C|<stall_C>stall_C}}|{<C_SF>C_SF|<c_SF>c_SF}|{<C_ZF>C_ZF|<c_ZF>c_ZF}"];
+    icode -> _reg_C:stall_C;
+    valC -> _reg_C:c_ZF;
+    valC -> _reg_C:c_SF;
+    _op_Stat [shape="none" label="75-79"];
+    _op_Stat -> _status:Stat;
+    icode -> _op_Stat [style=dotted];
+    _op_p_pc [shape="none" label="84-98"];
+    _op_p_pc -> _reg_P:p_pc;
+    _reg_P:P_pc -> _op_p_pc;
+    icode -> _op_p_pc [style=dotted];
+
+}

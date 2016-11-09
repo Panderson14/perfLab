@@ -1,0 +1,3 @@
+irmovq $4, %rsp
+popq %rax
+

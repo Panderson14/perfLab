@@ -1,0 +1,53 @@
+digraph pipehw1 { // auto-generated HCL2 visualization via graphviz
+    node [ fontname="sans-serif" ];
+    rankdir=BT;
+    ///////////////////////// builtin components ////////////////////////
+
+    _regfile [shape="record" label="{<reg_outputA>reg_outputA|<reg_srcA>reg_srcA}|{<reg_outputB>reg_outputB|<reg_srcB>reg_srcB}|{|{<reg_dstE>reg_dstE|<reg_inputE>reg_inputE}}|{|{<reg_dstM>reg_dstM|<reg_inputM>reg_inputM}}" style="filled" fillcolor="#aaffff"];
+    _datamem [shape="record" label="{<mem_output>mem_output|{<mem_readbit>mem_readbit|<mem_addr>mem_addr}}|{|{<mem_writebit>mem_writebit|<mem_input>mem_input}}" style="filled" fillcolor="#aaffff"];
+    _instmem [shape="record" label="{<i10bytes>i10bytes|<pc>pc}" style="filled" fillcolor="#aaffff"];
+    _status [shape="record" label="{|<Stat>Stat}" style="filled" fillcolor="#aaffff"];
+
+    //////////////////////////// user code //////////////////////////////
+
+_reg_P [shape="record" label="{|{<bubble_P>bubble_P|<stall_P>stall_P}}|{<P_pc>P_pc|<p_pc>p_pc}"];
+_reg_F [shape="record" label="{|{<bubble_F>bubble_F|<stall_F>stall_F}}"];
+_reg_D [shape="record" label="{|{<bubble_D>bubble_D|<stall_D>stall_D}}"];
+_reg_E [shape="record" label="{|{<bubble_E>bubble_E|<stall_E>stall_E}}"];
+_reg_M [shape="record" label="{|{<bubble_M>bubble_M|<stall_M>stall_M}}"];
+_reg_W [shape="record" label="{|{<bubble_W>bubble_W|<stall_W>stall_W}}"];
+    _reg_P:P_pc -> _instmem:pc;
+    _instmem:i10bytes -> icode;
+    _instmem:i10bytes -> ifun;
+    _instmem:i10bytes -> rA;
+    _instmem:i10bytes -> rB;
+    _op_valC [shape="none" label="36-39"];
+    _op_valC -> valC;
+    _instmem:i10bytes -> _op_valC;
+    icode -> _op_valC [style=dotted];
+    _op_offset [shape="none" label="42-47"];
+    _op_offset -> offset;
+    icode -> _op_offset [style=dotted];
+    _op_valP [shape="none" label="48:7-20"];
+    _op_valP -> valP;
+    _reg_P:P_pc -> _op_valP;
+    offset -> _op_valP;
+    _op_reg_srcA [shape="none" label="54-57"];
+    _op_reg_srcA -> _regfile:reg_srcA;
+    rA -> _op_reg_srcA;
+    icode -> _op_reg_srcA [style=dotted];
+    _op_reg_dstE [shape="none" label="73-76"];
+    _op_reg_dstE -> _regfile:reg_dstE;
+    rB -> _op_reg_dstE;
+    icode -> _op_reg_dstE [style=dotted];
+    _op_reg_inputE [shape="none" label="78-81"];
+    _op_reg_inputE -> _regfile:reg_inputE;
+    _regfile:reg_outputA -> _op_reg_inputE;
+    valC -> _op_reg_inputE;
+    icode -> _op_reg_inputE [style=dotted];
+    _op_Stat [shape="none" label="86-90"];
+    _op_Stat -> _status:Stat;
+    icode -> _op_Stat [style=dotted];
+    valP -> _reg_P:p_pc;
+
+}
