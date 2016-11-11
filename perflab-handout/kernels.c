@@ -55,16 +55,39 @@ void rotate(int dim, pixel *src, pixel *dst)
  */
 char rotate_quad_loop_descr[] = "Rotate with four loops instead of two";
 void rotate_quad_loop(int dim, pixel *src, pixel *dst) {
-    int BLOCK_SIZE = 32;
-    int bi, bj, i, j, x, y;
+    int BLOCK_SIZE = 8;
+    int bi, bj, i, j;
 
     for (bi = 0; bi < dim; bi+=BLOCK_SIZE)
         for (bj = 0; bj < dim; bj+=BLOCK_SIZE)
-            x = bi + BLOCK_SIZE;
-            for (i = bi; i < x; i++)
-                y = bj + BLOCK_SIZE;
-                for (j = bj; j < y; j++)
-                    dst[RIDX(y-1-j, i, BLOCK_SIZE)] = src[RIDX(x, j, BLOCK_SIZE)];
+            //x = bi + BLOCK_SIZE;
+            for (i = bi; i < bi+BLOCK_SIZE; i++)
+                //y = bj + BLOCK_SIZE;
+                for (j = bj; j < bj+BLOCK_SIZE; j++)
+                    dst[RIDX(dim-1-j, i, dim)] = src[RIDX(i, j, dim)];
+}
+
+
+/*
+ * rotate__loop_unrolling - Rotate with four loops instead of two
+ * includes code motion for inner for-loops
+ */
+char rotate__loop_unrolling_descr[] = "Loop Unrolling";
+void rotate__loop_unrolling(int dim, pixel *src, pixel *dst) {
+    int BLOCK_SIZE = 16;
+    int bi, bj, i, j;
+
+    for (bi = 0; bi < dim; bi+=BLOCK_SIZE)
+        for (bj = 0; bj < dim; bj+=BLOCK_SIZE)
+            //x = bi + BLOCK_SIZE;
+            for (i = bi; i < bi+BLOCK_SIZE; i+=2)
+                //y = bj + BLOCK_SIZE;
+                for (j = bj; j < bj+BLOCK_SIZE; j+=2) {
+                    dst[RIDX(dim-1-j, i, dim)] = src[RIDX(i, j, dim)];
+                    dst[RIDX(dim-1-j, i+1, dim)] = src[RIDX(i+1, j, dim)];
+                    dst[RIDX(dim-2-j, i, dim)] = src[RIDX(i, j+1, dim)];
+                    dst[RIDX(dim-2-j, i+1, dim)] = src[RIDX(i+1, j+1, dim)];
+                }
 }
 
 /*********************************************************************
@@ -80,6 +103,7 @@ void register_rotate_functions()
     add_rotate_function(&naive_rotate, naive_rotate_descr);   
     add_rotate_function(&rotate, rotate_descr);
     add_rotate_function(&rotate_quad_loop, rotate_quad_loop_descr);
+    add_rotate_function(&rotate__loop_unrolling, rotate__loop_unrolling_descr);
     /* ... Register additional test functions here */
 }
 
