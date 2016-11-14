@@ -69,11 +69,11 @@ void rotate_quad_loop(int dim, pixel *src, pixel *dst) {
 
 
 /*
- * rotate__loop_unrolling - Rotate with four loops instead of two
+ * rotate_loop_unrolling - Rotate with four loops instead of two
  * includes code motion for inner for-loops
  */
-char rotate__loop_unrolling_descr[] = "Loop Unrolling";
-void rotate__loop_unrolling(int dim, pixel *src, pixel *dst) {
+char rotate_loop_unrolling_descr[] = "Loop Unrolling";
+void rotate_loop_unrolling(int dim, pixel *src, pixel *dst) {
     int BLOCK_SIZE = 16;
     int bi, bj, i, j;
 
@@ -90,6 +90,120 @@ void rotate__loop_unrolling(int dim, pixel *src, pixel *dst) {
                 }
 }
 
+
+/*
+ * rotate_loop_unrolling_more - Rotate with four loops instead of two
+ * includes code motion for inner for-loops
+ */
+char rotate_8_descr[] = "Loop Unrolling More";
+void rotate_8(int dim, pixel *src, pixel *dst) {
+    int BLOCK_SIZE = 8;
+    int bi, bj, i, j, x, y;
+
+    for (bi = 0; bi < dim; bi+=BLOCK_SIZE) {
+        for (bj = 0; bj < dim; bj+=BLOCK_SIZE) {
+            x = bi + BLOCK_SIZE;
+            for (i = bi; i < x; i+=4) {
+                y = bj + BLOCK_SIZE;
+                for (j = bj; j < y; j+=4) {
+                    dst[RIDX(dim-1-j, i, dim)] = src[RIDX(i, j, dim)];
+                    dst[RIDX(dim-1-j, i+1, dim)] = src[RIDX(i+1, j, dim)];
+                    dst[RIDX(dim-1-j, i+2, dim)] = src[RIDX(i+2, j, dim)];  
+                    dst[RIDX(dim-1-j, i+3, dim)] = src[RIDX(i+3, j, dim)];
+                    dst[RIDX(dim-2-j, i, dim)] = src[RIDX(i, j+1, dim)];
+                    dst[RIDX(dim-2-j, i+1, dim)] = src[RIDX(i+1, j+1, dim)];
+                    dst[RIDX(dim-2-j, i+2, dim)] = src[RIDX(i+2, j+1, dim)];  
+                    dst[RIDX(dim-2-j, i+3, dim)] = src[RIDX(i+3, j+1, dim)]; 
+                    dst[RIDX(dim-3-j, i, dim)] = src[RIDX(i, j+2, dim)];
+                    dst[RIDX(dim-3-j, i+1, dim)] = src[RIDX(i+1, j+2, dim)];
+                    dst[RIDX(dim-3-j, i+2, dim)] = src[RIDX(i+2, j+2, dim)];  
+                    dst[RIDX(dim-3-j, i+3, dim)] = src[RIDX(i+3, j+2, dim)]; 
+                    dst[RIDX(dim-4-j, i, dim)] = src[RIDX(i, j+3, dim)];
+                    dst[RIDX(dim-4-j, i+1, dim)] = src[RIDX(i+1, j+3, dim)];
+                    dst[RIDX(dim-4-j, i+2, dim)] = src[RIDX(i+2, j+3, dim)];  
+                    dst[RIDX(dim-4-j, i+3, dim)] = src[RIDX(i+3, j+3, dim)]; 
+                }
+            }
+        }
+    }
+}
+
+
+/*
+ * rotate_loop_unrolling_more - Rotate with four loops instead of two
+ * includes code motion for inner for-loops
+ */
+char rotate_16_descr[] = "Loop Unrolling More";
+void rotate_16(int dim, pixel *src, pixel *dst) {
+    int BLOCK_SIZE = 16;
+    int bi, bj, i, j, x, y;
+
+    for (bi = 0; bi < dim; bi+=BLOCK_SIZE) {
+        for (bj = 0; bj < dim; bj+=BLOCK_SIZE) {
+            x = bi + BLOCK_SIZE;
+            for (i = bi; i < x; i+=4) {
+                y = bj + BLOCK_SIZE;
+                for (j = bj; j < y; j+=4) {
+                    dst[RIDX(dim-1-j, i, dim)] = src[RIDX(i, j, dim)];
+                    dst[RIDX(dim-1-j, i+1, dim)] = src[RIDX(i+1, j, dim)];
+                    dst[RIDX(dim-1-j, i+2, dim)] = src[RIDX(i+2, j, dim)];  
+                    dst[RIDX(dim-1-j, i+3, dim)] = src[RIDX(i+3, j, dim)];
+                    dst[RIDX(dim-2-j, i, dim)] = src[RIDX(i, j+1, dim)];
+                    dst[RIDX(dim-2-j, i+1, dim)] = src[RIDX(i+1, j+1, dim)];
+                    dst[RIDX(dim-2-j, i+2, dim)] = src[RIDX(i+2, j+1, dim)];  
+                    dst[RIDX(dim-2-j, i+3, dim)] = src[RIDX(i+3, j+1, dim)]; 
+                    dst[RIDX(dim-3-j, i, dim)] = src[RIDX(i, j+2, dim)];
+                    dst[RIDX(dim-3-j, i+1, dim)] = src[RIDX(i+1, j+2, dim)];
+                    dst[RIDX(dim-3-j, i+2, dim)] = src[RIDX(i+2, j+2, dim)];  
+                    dst[RIDX(dim-3-j, i+3, dim)] = src[RIDX(i+3, j+2, dim)]; 
+                    dst[RIDX(dim-4-j, i, dim)] = src[RIDX(i, j+3, dim)];
+                    dst[RIDX(dim-4-j, i+1, dim)] = src[RIDX(i+1, j+3, dim)];
+                    dst[RIDX(dim-4-j, i+2, dim)] = src[RIDX(i+2, j+3, dim)];  
+                    dst[RIDX(dim-4-j, i+3, dim)] = src[RIDX(i+3, j+3, dim)]; 
+                }
+            }
+        }
+    }
+}
+
+
+/*
+ * rotate_loop_unrolling_more - Rotate with four loops instead of two
+ * includes code motion for inner for-loops
+ */
+char rotate_32_descr[] = "Loop Unrolling More";
+void rotate_32(int dim, pixel *src, pixel *dst) {
+    int BLOCK_SIZE = 32;
+    int bi, bj, i, j, x, y;
+
+    for (bi = 0; bi < dim; bi+=BLOCK_SIZE) {
+        for (bj = 0; bj < dim; bj+=BLOCK_SIZE) {
+            x = bi + BLOCK_SIZE;
+            for (i = bi; i < x; i+=4) {
+                y = bj + BLOCK_SIZE;
+                for (j = bj; j < y; j+=4) {
+                    dst[RIDX(dim-1-j, i, dim)] = src[RIDX(i, j, dim)];
+                    dst[RIDX(dim-1-j, i+1, dim)] = src[RIDX(i+1, j, dim)];
+                    dst[RIDX(dim-1-j, i+2, dim)] = src[RIDX(i+2, j, dim)];  
+                    dst[RIDX(dim-1-j, i+3, dim)] = src[RIDX(i+3, j, dim)];
+                    dst[RIDX(dim-2-j, i, dim)] = src[RIDX(i, j+1, dim)];
+                    dst[RIDX(dim-2-j, i+1, dim)] = src[RIDX(i+1, j+1, dim)];
+                    dst[RIDX(dim-2-j, i+2, dim)] = src[RIDX(i+2, j+1, dim)];  
+                    dst[RIDX(dim-2-j, i+3, dim)] = src[RIDX(i+3, j+1, dim)]; 
+                    dst[RIDX(dim-3-j, i, dim)] = src[RIDX(i, j+2, dim)];
+                    dst[RIDX(dim-3-j, i+1, dim)] = src[RIDX(i+1, j+2, dim)];
+                    dst[RIDX(dim-3-j, i+2, dim)] = src[RIDX(i+2, j+2, dim)];  
+                    dst[RIDX(dim-3-j, i+3, dim)] = src[RIDX(i+3, j+2, dim)]; 
+                    dst[RIDX(dim-4-j, i, dim)] = src[RIDX(i, j+3, dim)];
+                    dst[RIDX(dim-4-j, i+1, dim)] = src[RIDX(i+1, j+3, dim)];
+                    dst[RIDX(dim-4-j, i+2, dim)] = src[RIDX(i+2, j+3, dim)];  
+                    dst[RIDX(dim-4-j, i+3, dim)] = src[RIDX(i+3, j+3, dim)]; 
+                }
+            }
+        }
+    }
+}
+
 /*********************************************************************
  * register_rotate_functions - Register all of your different versions
  *     of the rotate kernel with the driver by calling the
@@ -103,7 +217,10 @@ void register_rotate_functions()
     add_rotate_function(&naive_rotate, naive_rotate_descr);   
     add_rotate_function(&rotate, rotate_descr);
     add_rotate_function(&rotate_quad_loop, rotate_quad_loop_descr);
-    add_rotate_function(&rotate__loop_unrolling, rotate__loop_unrolling_descr);
+    add_rotate_function(&rotate_loop_unrolling, rotate_loop_unrolling_descr);
+    add_rotate_function(&rotate_8, rotate_8_descr);
+    add_rotate_function(&rotate_16, rotate_16_descr);
+    add_rotate_function(&rotate_32, rotate_32_descr);
     /* ... Register additional test functions here */
 }
 
