@@ -325,6 +325,87 @@ void smooth(int dim, pixel *src, pixel *dst)
 }
 
 
+/*
+ * smooth - Another version of smooth. 
+ */
+char smooth_trial_descr[] = "first attempt";
+void smooth_trial(int dim, pixel *src, pixel *dst) 
+{
+    int i, j;
+    int tl, tc, tr, ml, mc, mr, bl, bc, br;
+    int iimin, jjmin;
+
+    for (i = 0; i < dim; i++) {
+        tl = tc = tr = ml = mc = mr = bl = bc = br = 0;
+        
+        for (j = 0; j < dim; j++) {
+            tl = tc;
+            tc = tr;
+            ml = mc;
+            mc = mr;
+            bl = bc;
+            bc = br;
+
+            int ii, jj;
+            pixel_sum sum;
+            pixel current_pixel;
+
+            sum.red = sum.green = sum.blue = 0;
+            sum.num = 0;
+
+            iimin = min(i+1, dim-1);
+            jjmin = min(j+1, dim-1);
+            for(ii = max(i-1, 0); ii <= iimin; ii++) 
+            for(jj = max(j-1, 0); jj <= jjmin; jj++) {
+                accumulate_sum(&sum, src[RIDX(ii, jj, dim)]);
+            }
+
+            current_pixel.red = (unsigned short) (sum.red/sum.num);
+            current_pixel.green = (unsigned short) (sum.green/sum.num);
+            current_pixel.blue = (unsigned short) (sum.blue/sum.num);
+
+            dst[RIDX(i, j, dim)] = current_pixel;
+        }
+    }
+}
+
+
+/*
+ * naive_smooth - The naive baseline version of smooth 
+ */
+char smooth_debug_descr[] = "We will debug our code";
+void smooth_debug(int dim, pixel *src, pixel *dst) 
+{
+    int i, j;
+    int iimin, jjmin;
+
+    for (i = 0; i < dim; i++) {
+        for (j = 0; j < dim; j++) {
+            int ii, jj;
+            pixel_sum sum;
+            pixel current_pixel;
+
+            sum.red = sum.green = sum.blue = 0;
+            sum.num = 0;
+
+            iimin = min(i+1, dim-1);
+            jjmin = min(j+1, dim-1);
+
+            for(ii = max(i-1, 0); ii <= iimin; ii++) 
+            for(jj = max(j-1, 0); jj <= jjmin; jj++) {
+                accumulate_sum(&sum, src[RIDX(ii, jj, dim)]);
+            }
+
+            current_pixel.red = (unsigned short) (sum.red/sum.num);
+            current_pixel.green = (unsigned short) (sum.green/sum.num);
+            current_pixel.blue = (unsigned short) (sum.blue/sum.num);
+
+            dst[RIDX(i, j, dim)] = current_pixel;
+        } 
+    }
+}
+
+
 /********************************************************************* 
  * register_smooth_functions - Register all of your different versions
  *     of the smooth kernel with the driver by calling the
@@ -336,6 +417,8 @@ void smooth(int dim, pixel *src, pixel *dst)
 void register_smooth_functions() {
     add_smooth_function(&smooth, smooth_descr);
     add_smooth_function(&naive_smooth, naive_smooth_descr);
+    add_smooth_function(&smooth_trial, smooth_trial_descr);
+    //add_smooth_function(&smooth_debug, smooth_debug_descr);
     /* ... Register additional test functions here */
 }
 
