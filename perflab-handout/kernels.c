@@ -472,7 +472,7 @@ void smooth_pro(int dim, pixel *src, pixel *dst)
     current_pixel.green = (unsigned short) (sum.green/4);
     current_pixel.blue = (unsigned short) (sum.blue/4);
 
-    dst[RIDX(i, j, dim)] = current_pixel;
+    dst[RIDX(0, dim-1, dim)] = current_pixel;
 
 
     // Bottom left corner
@@ -498,7 +498,7 @@ void smooth_pro(int dim, pixel *src, pixel *dst)
     current_pixel.green = (unsigned short) (sum.green/4);
     current_pixel.blue = (unsigned short) (sum.blue/4);
 
-    dst[RIDX(i, j, dim)] = current_pixel;
+    dst[RIDX(dim-1, 0, dim)] = current_pixel;
 
 
     // Bottom right corner
@@ -524,7 +524,7 @@ void smooth_pro(int dim, pixel *src, pixel *dst)
     current_pixel.green = (unsigned short) (sum.green/4);
     current_pixel.blue = (unsigned short) (sum.blue/4);
 
-    dst[RIDX(i, j, dim)] = current_pixel;
+    dst[RIDX(dim-1, dim-1, dim)] = current_pixel;
 
 
     /*
