@@ -214,13 +214,13 @@ void rotate_32(int dim, pixel *src, pixel *dst) {
 
 void register_rotate_functions() 
 {
-    add_rotate_function(&naive_rotate, naive_rotate_descr);   
+    /*add_rotate_function(&naive_rotate, naive_rotate_descr);   
     add_rotate_function(&rotate, rotate_descr);
     add_rotate_function(&rotate_quad_loop, rotate_quad_loop_descr);
     add_rotate_function(&rotate_loop_unrolling, rotate_loop_unrolling_descr);
     add_rotate_function(&rotate_8, rotate_8_descr);
     add_rotate_function(&rotate_16, rotate_16_descr);
-    add_rotate_function(&rotate_32, rotate_32_descr);
+    add_rotate_function(&rotate_32, rotate_32_descr); */
     /* ... Register additional test functions here */
 }
 
@@ -357,6 +357,7 @@ void smooth_trial(int dim, pixel *src, pixel *dst)
             jjmin = min(j+1, dim-1);
             for(ii = max(i-1, 0); ii <= iimin; ii++) 
             for(jj = max(j-1, 0); jj <= jjmin; jj++) {
+
                 accumulate_sum(&sum, src[RIDX(ii, jj, dim)]);
             }
 
@@ -393,7 +394,10 @@ void smooth_debug(int dim, pixel *src, pixel *dst)
 
             for(ii = max(i-1, 0); ii <= iimin; ii++) 
             for(jj = max(j-1, 0); jj <= jjmin; jj++) {
-                accumulate_sum(&sum, src[RIDX(ii, jj, dim)]);
+                sum.red += (int) src[RIDX(ii, jj, dim)].red;
+                sum.green += (int) src[RIDX(ii, jj, dim)].green;
+                sum.blue += (int) src[RIDX(ii, jj, dim)].blue;
+                sum.num++;
             }
 
             current_pixel.red = (unsigned short) (sum.red/sum.num);
@@ -406,6 +410,158 @@ void smooth_debug(int dim, pixel *src, pixel *dst)
 }
 
 
+/*
+ * 1. Write out each corner (no loops)
+ * 2. Write out each edge (one loop for each if unrolled)
+ * 3. Do the center (two loops, unrolled)
+ */
+char smooth_pro_descr[] = "This is the Pro version";
+void smooth_pro(int dim, pixel *src, pixel *dst) 
+{
+    pixel_sum sum;
+    pixel current_pixel;
+
+    //Top left corner
+    sum.red = sum.green = sum.blue = 0;
+
+    sum.red += (int) src[RIDX(0, 0, dim)].red;
+    sum.green += (int) src[RIDX(0, 0, dim)].green;
+    sum.blue += (int) src[RIDX(0, 0, dim)].blue;
+
+    sum.red += (int) src[RIDX(1, 0, dim)].red;
+    sum.green += (int) src[RIDX(1, 0, dim)].green;
+    sum.blue += (int) src[RIDX(1, 0, dim)].blue;
+
+    sum.red += (int) src[RIDX(0, 1, dim)].red;
+    sum.green += (int) src[RIDX(0, 1, dim)].green;
+    sum.blue += (int) src[RIDX(0, 1, dim)].blue;
+
+    sum.red += (int) src[RIDX(1, 1, dim)].red;
+    sum.green += (int) src[RIDX(1, 1, dim)].green;
+    sum.blue += (int) src[RIDX(1, 1, dim)].blue;
+
+    current_pixel.red = (unsigned short) (sum.red/4);
+    current_pixel.green = (unsigned short) (sum.green/4);
+    current_pixel.blue = (unsigned short) (sum.blue/4);
+
+    dst[RIDX(0, 0, dim)] = current_pixel;
+
+
+    // Top right corner
+    // Make those variables
+    // Todo
+    sum.red = sum.green = sum.blue = 0;
+
+    sum.red += (int) src[RIDX(0, dim-1, dim)].red;
+    sum.green += (int) src[RIDX(0, dim-1, dim)].green;
+    sum.blue += (int) src[RIDX(0, dim-1, dim)].blue;
+
+    sum.red += (int) src[RIDX(0, dim-2, dim)].red;
+    sum.green += (int) src[RIDX(0, dim-2, dim)].green;
+    sum.blue += (int) src[RIDX(0, dim-2, dim)].blue;
+
+    sum.red += (int) src[RIDX(1, dim-1, dim)].red;
+    sum.green += (int) src[RIDX(1, dim-1, dim)].green;
+    sum.blue += (int) src[RIDX(1, dim-1, dim)].blue;
+
+    sum.red += (int) src[RIDX(1, dim-2, dim)].red;
+    sum.green += (int) src[RIDX(1, dim-2, dim)].green;
+    sum.blue += (int) src[RIDX(1, dim-2, dim)].blue;
+
+    current_pixel.red = (unsigned short) (sum.red/4);
+    current_pixel.green = (unsigned short) (sum.green/4);
+    current_pixel.blue = (unsigned short) (sum.blue/4);
+
+    dst[RIDX(i, j, dim)] = current_pixel;
+
+
+    // Bottom left corner
+    sum.red = sum.green = sum.blue = 0;
+
+    sum.red += (int) src[RIDX(dim-1, 0, dim)].red;
+    sum.green += (int) src[RIDX(dim-1, 0, dim)].green;
+    sum.blue += (int) src[RIDX(dim-1, 0, dim)].blue;
+
+    sum.red += (int) src[RIDX(dim-2, 0, dim)].red;
+    sum.green += (int) src[RIDX(dim-2, 0, dim)].green;
+    sum.blue += (int) src[RIDX(dim-2, 0, dim)].blue;
+
+    sum.red += (int) src[RIDX(dim-1, 1, dim)].red;
+    sum.green += (int) src[RIDX(dim-1, 1, dim)].green;
+    sum.blue += (int) src[RIDX(dim-1, 1, dim)].blue;
+
+    sum.red += (int) src[RIDX(dim-2, 1, dim)].red;
+    sum.green += (int) src[RIDX(dim-2, 1, dim)].green;
+    sum.blue += (int) src[RIDX(dim-2, 1, dim)].blue;
+
+    current_pixel.red = (unsigned short) (sum.red/4);
+    current_pixel.green = (unsigned short) (sum.green/4);
+    current_pixel.blue = (unsigned short) (sum.blue/4);
+
+    dst[RIDX(i, j, dim)] = current_pixel;
+
+
+    // Bottom right corner
+    sum.red = sum.green = sum.blue = 0;
+
+    sum.red += (int) src[RIDX(dim-1, dim-1, dim)].red;
+    sum.green += (int) src[RIDX(dim-1, dim-1, dim)].green;
+    sum.blue += (int) src[RIDX(dim-1, dim-1, dim)].blue;
+
+    sum.red += (int) src[RIDX(dim-2, dim-1, dim)].red;
+    sum.green += (int) src[RIDX(dim-2, dim-1, dim)].green;
+    sum.blue += (int) src[RIDX(dim-2, dim-1, dim)].blue;
+
+    sum.red += (int) src[RIDX(dim-1, dim-2, dim)].red;
+    sum.green += (int) src[RIDX(dim-1, dim-2, dim)].green;
+    sum.blue += (int) src[RIDX(dim-1, dim-2, dim)].blue;
+
+    sum.red += (int) src[RIDX(dim-2, dim-2, dim)].red;
+    sum.green += (int) src[RIDX(dim-2, dim-2, dim)].green;
+    sum.blue += (int) src[RIDX(dim-2, dim-2, dim)].blue;
+
+    current_pixel.red = (unsigned short) (sum.red/4);
+    current_pixel.green = (unsigned short) (sum.green/4);
+    current_pixel.blue = (unsigned short) (sum.blue/4);
+
+    dst[RIDX(i, j, dim)] = current_pixel;
+
+
+    /*
+    int i, j;
+    int iimin, jjmin;
+
+    for (i = 0; i < dim; i++) {
+        for (j = 0; j < dim; j++) {
+            int ii, jj;
+            pixel_sum sum;
+            pixel current_pixel;
+
+            sum.red = sum.green = sum.blue = 0;
+            sum.num = 0;
+
+            iimin = min(i+1, dim-1);
+            jjmin = min(j+1, dim-1);
+
+            for(ii = max(i-1, 0); ii <= iimin; ii++) 
+            for(jj = max(j-1, 0); jj <= jjmin; jj++) {
+                sum.red += (int) src[RIDX(ii, jj, dim)].red;
+                sum.green += (int) src[RIDX(ii, jj, dim)].green;
+                sum.blue += (int) src[RIDX(ii, jj, dim)].blue;
+                sum.num++;
+            }
+
+            current_pixel.red = (unsigned short) (sum.red/sum.num);
+            current_pixel.green = (unsigned short) (sum.green/sum.num);
+            current_pixel.blue = (unsigned short) (sum.blue/sum.num);
+
+            dst[RIDX(i, j, dim)] = current_pixel;
+        } 
+    }
+    */
+}
+
+
 /********************************************************************* 
  * register_smooth_functions - Register all of your different versions
  *     of the smooth kernel with the driver by calling the
@@ -415,10 +571,11 @@ void smooth_debug(int dim, pixel *src, pixel *dst)
  *********************************************************************/
 
 void register_smooth_functions() {
-    add_smooth_function(&smooth, smooth_descr);
+    //add_smooth_function(&smooth, smooth_descr);
     add_smooth_function(&naive_smooth, naive_smooth_descr);
-    add_smooth_function(&smooth_trial, smooth_trial_descr);
+    //add_smooth_function(&smooth_trial, smooth_trial_descr);
     //add_smooth_function(&smooth_debug, smooth_debug_descr);
+    add_smooth_function(&smooth_pro, smooth_pro_descr);
     /* ... Register additional test functions here */
 }
 
