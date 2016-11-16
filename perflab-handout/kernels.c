@@ -421,6 +421,9 @@ void smooth_pro(int dim, pixel *src, pixel *dst)
     pixel_sum sum;
     pixel current_pixel;
 
+    //TODO
+    // Make those variables
+    // RIDX
     //Top left corner
     sum.red = sum.green = sum.blue = 0;
 
@@ -448,8 +451,6 @@ void smooth_pro(int dim, pixel *src, pixel *dst)
 
 
     // Top right corner
-    // Make those variables
-    // Todo
     sum.red = sum.green = sum.blue = 0;
 
     sum.red += (int) src[RIDX(0, dim-1, dim)].red;
@@ -527,6 +528,193 @@ void smooth_pro(int dim, pixel *src, pixel *dst)
     dst[RIDX(dim-1, dim-1, dim)] = current_pixel;
 
 
+        /* top edge */  
+    for (int i = 1; i < dim-1; i++) {
+        sum.red = sum.green = sum.blue = 0;
+
+        sum.red += (int) src[RIDX(i-1, 0, dim)].red;
+        sum.green += (int) src[RIDX(i-1, 0, dim)].green;
+        sum.blue += (int) src[RIDX(i-1, 0, dim)].blue;
+
+        sum.red += (int) src[RIDX(i, 0, dim)].red;
+        sum.green += (int) src[RIDX(i, 0, dim)].green;
+        sum.blue += (int) src[RIDX(i, 0, dim)].blue;
+
+        sum.red += (int) src[RIDX(i+1, 0, dim)].red;
+        sum.green += (int) src[RIDX(i+1, 0, dim)].green;
+        sum.blue += (int) src[RIDX(i+1, 0, dim)].blue;
+
+        sum.red += (int) src[RIDX(i-1, 1, dim)].red;
+        sum.green += (int) src[RIDX(i-1, 1, dim)].green;
+        sum.blue += (int) src[RIDX(i-1, 1, dim)].blue;
+
+        sum.red += (int) src[RIDX(i, 1, dim)].red;
+        sum.green += (int) src[RIDX(i, 1, dim)].green;
+        sum.blue += (int) src[RIDX(i, 1, dim)].blue;
+
+        sum.red += (int) src[RIDX(i+1, 1, dim)].red;
+        sum.green += (int) src[RIDX(i+1, 1, dim)].green;
+        sum.blue += (int) src[RIDX(i+1, 1, dim)].blue;
+
+        current_pixel.red = (unsigned short) (sum.red/6);
+        current_pixel.green = (unsigned short) (sum.green/6);
+        current_pixel.blue = (unsigned short) (sum.blue/6);
+
+        dst[RIDX(i, 0, dim)] = current_pixel;
+    }
+    
+    /* Right Edge */
+    for (int i = 1; i < dim-1; i++) {
+        sum.red = sum.green = sum.blue = 0;
+        int x = dim-1;
+        sum.red += (int) src[RIDX(x-1, i-1, dim)].red;
+        sum.green += (int) src[RIDX(x-1, i-1, dim)].green;
+        sum.blue += (int) src[RIDX(x-1, i-1, dim)].blue;
+
+        sum.red += (int) src[RIDX(x-1, i, dim)].red;
+        sum.green += (int) src[RIDX(x-1, i, dim)].green;
+        sum.blue += (int) src[RIDX(x-1, i, dim)].blue;
+
+        sum.red += (int) src[RIDX(x-1, i+1, dim)].red;
+        sum.green += (int) src[RIDX(x-1, i+1, dim)].green;
+        sum.blue += (int) src[RIDX(x-1, i+1, dim)].blue;
+
+        sum.red += (int) src[RIDX(x, i-1, dim)].red;
+        sum.green += (int) src[RIDX(x, i-1, dim)].green;
+        sum.blue += (int) src[RIDX(x, i-1, dim)].blue;
+
+        sum.red += (int) src[RIDX(x, i, dim)].red;
+        sum.green += (int) src[RIDX(x, i, dim)].green;
+        sum.blue += (int) src[RIDX(x, i, dim)].blue;
+
+        sum.red += (int) src[RIDX(x, i+1, dim)].red;
+        sum.green += (int) src[RIDX(x, i+1, dim)].green;
+        sum.blue += (int) src[RIDX(x, i+1, dim)].blue;
+
+        current_pixel.red = (unsigned short) (sum.red/6);
+        current_pixel.green = (unsigned short) (sum.green/6);
+        current_pixel.blue = (unsigned short) (sum.blue/6);
+
+        dst[RIDX(x, i, dim)] = current_pixel;
+    }
+
+    /* Bottom Edge */
+    for (int i = 1; i < dim-1; i++) {
+        sum.red = sum.green = sum.blue = 0;
+        int x = dim-1;
+        sum.red += (int) src[RIDX(i-1, x-1, dim)].red;
+        sum.green += (int) src[RIDX(i-1, x-1, dim)].green;
+        sum.blue += (int) src[RIDX(i-1, x-1, dim)].blue;
+
+        sum.red += (int) src[RIDX(i, x-1, dim)].red;
+        sum.green += (int) src[RIDX(i, x-1, dim)].green;
+        sum.blue += (int) src[RIDX(i, x-1, dim)].blue;
+
+        sum.red += (int) src[RIDX(i+1, x-1, dim)].red;
+        sum.green += (int) src[RIDX(i+1, x-1, dim)].green;
+        sum.blue += (int) src[RIDX(i+1, x-1, dim)].blue;
+
+        sum.red += (int) src[RIDX(i-1, x, dim)].red;
+        sum.green += (int) src[RIDX(i-1, x, dim)].green;
+        sum.blue += (int) src[RIDX(i-1, x, dim)].blue;
+
+        sum.red += (int) src[RIDX(i, x, dim)].red;
+        sum.green += (int) src[RIDX(i, x, dim)].green;
+        sum.blue += (int) src[RIDX(i, x, dim)].blue;
+
+        sum.red += (int) src[RIDX(i+1, x, dim)].red;
+        sum.green += (int) src[RIDX(i+1, x, dim)].green;
+        sum.blue += (int) src[RIDX(i+1, x, dim)].blue;
+
+        current_pixel.red = (unsigned short) (sum.red/6);
+        current_pixel.green = (unsigned short) (sum.green/6);
+        current_pixel.blue = (unsigned short) (sum.blue/6);
+
+        dst[RIDX(i, x, dim)] = current_pixel;
+    }
+
+    /* Left Edge */
+    for (int i = 1; i < dim-1; i++) {
+        sum.red = sum.green = sum.blue = 0;
+        sum.red += (int) src[RIDX(0, i-1, dim)].red;
+        sum.green += (int) src[RIDX(0, i-1, dim)].green;
+        sum.blue += (int) src[RIDX(0, i-1, dim)].blue;
+
+        sum.red += (int) src[RIDX(0, i, dim)].red;
+        sum.green += (int) src[RIDX(0, i, dim)].green;
+        sum.blue += (int) src[RIDX(0, i, dim)].blue;
+
+        sum.red += (int) src[RIDX(0, i+1, dim)].red;
+        sum.green += (int) src[RIDX(0, i+1, dim)].green;
+        sum.blue += (int) src[RIDX(0, i+1, dim)].blue;
+
+        sum.red += (int) src[RIDX(1, i-1, dim)].red;
+        sum.green += (int) src[RIDX(1, i-1, dim)].green;
+        sum.blue += (int) src[RIDX(1, i-1, dim)].blue;
+
+        sum.red += (int) src[RIDX(1, i, dim)].red;
+        sum.green += (int) src[RIDX(1, i, dim)].green;
+        sum.blue += (int) src[RIDX(1, i, dim)].blue;
+
+        sum.red += (int) src[RIDX(1, i+1, dim)].red;
+        sum.green += (int) src[RIDX(1, i+1, dim)].green;
+        sum.blue += (int) src[RIDX(1, i+1, dim)].blue;
+
+        current_pixel.red = (unsigned short) (sum.red/6);
+        current_pixel.green = (unsigned short) (sum.green/6);
+        current_pixel.blue = (unsigned short) (sum.blue/6);
+
+        dst[RIDX(0, i, dim)] = current_pixel;
+    }
+
+
+    for(int i = 1; i < dim-1; i++) {
+        for(int j = 1; j < dim-1; j++) {
+            sum.red = sum.green = sum.blue = 0;
+
+            sum.red += (int) src[RIDX(i-1, j-1, dim)].red;
+            sum.green += (int) src[RIDX(i-1, j-1, dim)].green;
+            sum.blue += (int) src[RIDX(i-1, j-1, dim)].blue;
+
+            sum.red += (int) src[RIDX(i, j-1, dim)].red;
+            sum.green += (int) src[RIDX(i, j-1, dim)].green;
+            sum.blue += (int) src[RIDX(i, j-1, dim)].blue;  
+
+            sum.red += (int) src[RIDX(i+1, j-1, dim)].red;
+            sum.green += (int) src[RIDX(i+1, j-1, dim)].green;
+            sum.blue += (int) src[RIDX(i+1, j-1, dim)].blue; 
+
+            sum.red += (int) src[RIDX(i-1, j, dim)].red;
+            sum.green += (int) src[RIDX(i-1, j, dim)].green;
+            sum.blue += (int) src[RIDX(i-1, j, dim)].blue; 
+
+            sum.red += (int) src[RIDX(i, j, dim)].red;
+            sum.green += (int) src[RIDX(i, j, dim)].green;
+            sum.blue += (int) src[RIDX(i, j, dim)].blue; 
+
+            sum.red += (int) src[RIDX(i+1, j, dim)].red;
+            sum.green += (int) src[RIDX(i+1, j, dim)].green;
+            sum.blue += (int) src[RIDX(i+1, j, dim)].blue; 
+
+            sum.red += (int) src[RIDX(i-1, j+1, dim)].red;
+            sum.green += (int) src[RIDX(i-1, j+1, dim)].green;
+            sum.blue += (int) src[RIDX(i-1, j+1, dim)].blue; 
+
+            sum.red += (int) src[RIDX(i, j+1, dim)].red;
+            sum.green += (int) src[RIDX(i, j+1, dim)].green;
+            sum.blue += (int) src[RIDX(i, j+1, dim)].blue; 
+
+            sum.red += (int) src[RIDX(i+1, j+1, dim)].red;
+            sum.green += (int) src[RIDX(i+1, j+1, dim)].green;
+            sum.blue += (int) src[RIDX(i+1, j+1, dim)].blue;
+
+            current_pixel.red = (unsigned short) (sum.red/9);
+            current_pixel.green = (unsigned short) (sum.green/9);
+            current_pixel.blue = (unsigned short) (sum.blue/9);
+
+            dst[RIDX(i, j, dim)] = current_pixel;                        
+        }
+    }
     /*
     int i, j;
     int iimin, jjmin;
